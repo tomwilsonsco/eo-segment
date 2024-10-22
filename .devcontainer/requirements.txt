@@ -1,0 +1,12 @@
+numpy
+pandas
+requests
+rasterio
+geopandas
+black
+flake8
+pytest
+pytest-cov
+codecov
+rschip
+fastai
