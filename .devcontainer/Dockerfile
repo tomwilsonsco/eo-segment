@@ -1,5 +1,5 @@
 # Base Image
-FROM python:3.12.4-bookworm
+FROM pytorch/pytorch:2.5.0-cuda12.4-cudnn9-runtime
 
 # pip
 RUN pip install --upgrade pip
