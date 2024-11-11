@@ -6,7 +6,11 @@ import argparse
 from fastai.vision.all import load_learner
 from rschip import ImageChip
 import pickle
-from train import open_tif_rasterio, get_x, get_y   # need this part of the data load for prediction
+from train import (
+    open_tif_rasterio,
+    get_x,
+    get_y,
+)  # need this part of the data load for prediction
 
 
 def write_prediction(image_path, output_path, pred_arr):
@@ -14,7 +18,8 @@ def write_prediction(image_path, output_path, pred_arr):
         prof = f.profile
     prof.update(count=1, dtype=np.int8)
     with rio.open(output_path, "w", **prof) as f:
-       f.write(pred_arr)
+        f.write(pred_arr)
+
 
 def _generate_windows(src, tile_size, offset):
     for y in range(0, src.height, offset):
@@ -22,11 +27,13 @@ def _generate_windows(src, tile_size, offset):
             window = Window(x, y, tile_size, tile_size)
             yield window
 
+
 def apply_normaliser_scaler(img_arr, normaliser_scaler):
     if "normaliser" in normaliser_scaler:
         return ImageChip.apply_normaliser(img_arr, normaliser_scaler["normaliser"])
     else:
         return ImageChip.apply_scaler(img_arr, normaliser_scaler["scaler"])
+
 
 def centre_only_prediction(pred_arr, win, src):
     tile_size = pred_arr.shape[0]
@@ -57,13 +64,17 @@ def read_predict_window(image_path, window, model, normaliser_scaler):
         img_arr = f.read(window=window, boundless=True, fill_value=0)
     if normaliser_scaler:
         img_arr = apply_normaliser_scaler(img_arr, normaliser_scaler)
-    pred = model.predict(img_arr)[0].numpy()   # predict method returns (label, _, probabilities)
+    pred = model.predict(img_arr)[
+        0
+    ].numpy()  # predict method returns (label, _, probabilities)
     return np.squeeze(pred)
+
 
 def win_ranges(win):
     ymin, ymax = (win.row_off, win.row_off + win.height)
     xmin, xmax = (win.col_off, win.col_off + win.width)
     return ymin, ymax, xmin, xmax
+
 
 def init_pred_array(pred_full, win, tile_size):
     ymin, ymax, xmin, xmax = win_ranges(win)
@@ -73,8 +84,9 @@ def init_pred_array(pred_full, win, tile_size):
     init_arr[0:value_ht, 0:value_wd] = value_ext
     return init_arr, value_ht, value_wd
 
+
 def predict_image(image_path, output_path, model, normaliser_scaler, tile_size, offset):
-    with (rio.open(image_path) as src):
+    with rio.open(image_path) as src:
         windows = list(_generate_windows(src, tile_size, offset))
         pred_full = np.zeros((1, src.height, src.width))
         for i, win in enumerate(windows):
@@ -86,7 +98,7 @@ def predict_image(image_path, output_path, model, normaliser_scaler, tile_size, 
             pred = pred[0:val_ht, 0:val_wd]
             ymin, ymax, xmin, xmax = win_ranges(win)
             pred_full[0, ymin:ymax, xmin:xmax] = pred
-            if i != 0 and i % 100 ==0:
+            if i != 0 and i % 100 == 0:
                 print(f"predicted {i} of {len(windows)}")
     write_prediction(image_path, output_path, pred_full)
     print(f"Created {output_path}")
@@ -129,7 +141,6 @@ def main():
         help="Offset for sliding windows.",
     )
 
-
     args = parser.parse_args()
 
     # Convert paths to Pathlib objects
@@ -148,8 +159,10 @@ def main():
             elif "scaler" in normaliser_scaler_fp.name:
                 normaliser_scaler = {"scaler": n_s}
             else:
-                raise ValueError(f"{normaliser_scaler_fp.name} not valid - must have normaliser or scaler in pickle file "
-                                 f"name.")
+                raise ValueError(
+                    f"{normaliser_scaler_fp.name} not valid - must have normaliser or scaler in pickle file "
+                    f"name."
+                )
     else:
         normaliser_scaler = None
 
@@ -168,7 +181,10 @@ def main():
 
     model = load_learner(model_path, cpu=False)
 
-    predict_image(image_path, output_path, model, normaliser_scaler, args.tile_size, args.offset)
+    predict_image(
+        image_path, output_path, model, normaliser_scaler, args.tile_size, args.offset
+    )
+
 
 if __name__ == "__main__":
     main()
