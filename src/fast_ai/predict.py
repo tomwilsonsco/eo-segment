@@ -89,7 +89,7 @@ def predict_image(image_path, output_path, model, normaliser_scaler, tile_size, 
             if i != 0 and i % 100 ==0:
                 print(f"predicted {i} of {len(windows)}")
     write_prediction(image_path, output_path, pred_full)
-# Make centre only prediction an input argument. Get code on GitHub
+    print(f"Created {output_path}")
 
 
 def main():
@@ -134,8 +134,8 @@ def main():
 
     # Convert paths to Pathlib objects
     image_path = Path(args.input_image)
-    output_path = Path("outputs/", f"{image_path.stem}_prediction.tif")
     model_path = Path(args.trained_model)
+    output_path = Path("outputs/", f"{image_path.stem}_{model_path.stem}_pred.tif")
 
     if args.normaliser_scaler:
         normaliser_scaler_fp = Path(args.normaliser_scaler)
@@ -159,6 +159,12 @@ def main():
 
     if not model_path.exists():
         raise FileNotFoundError("Model path does not exist.")
+
+    if output_path.exists():
+        try:
+            Path.unlink(output_path)
+        except:
+            raise FileExistsError("Prediction image already exists. Cannot overwrite.")
 
     model = load_learner(model_path, cpu=False)
 
