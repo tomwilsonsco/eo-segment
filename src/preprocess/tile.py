@@ -6,6 +6,8 @@ from pathlib import Path
 def main():
     output_dir = Path("inputs") / "chips_img"
 
+    output_dir.mkdir(parents=True, exist_ok=True)
+
     # Initialize the ImageChip instance for 128 by 128 tiles
     image_chipper = ImageChip(
         input_image_path="inputs/s2_flow_country_2023_06_16.tif",
