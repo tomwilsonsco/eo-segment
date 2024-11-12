@@ -20,7 +20,7 @@ And make predictions for full image extent:
 python src/fast_ai/predict.py \
 --input-image inputs/s2_flow_country_2023_06_16.tif \
 --trained-model models/fastai_unet_31_10_2024_1119 \
---normaliser-scaler outputs/chips_img/s2_flow_country_2023_06_16_normaliser.pkl \
+--normaliser-scaler inputs/chips_img/s2_flow_country_2023_06_16_normaliser.pkl \
 --boundary-remove
 ```
 
