@@ -1,6 +1,5 @@
 # segment eo imagery using ai
-Currently implemented fastai process using fastai's [`unet_learner()`](https://fastai.github.io/fastai-docs/vision.
-learner#unet_learner). Similar segmentation using other deep learning libraries will be added over time.
+Currently implemented fastai process using fastai's [unet_learner()](https://fastai.github.io/fastai-docs/vision.learner#unet_learner). Similar segmentation using other deep learning libraries will be added over time.
 
 Makes use of [rschip](https://github.com/tomwilsonsco/rs-chip) for image preprocessing and creating normaliser.
 
