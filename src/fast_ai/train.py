@@ -9,6 +9,12 @@ from pathlib import Path
 def open_tif_rasterio(fn):
     """
     Open a TIF file using rasterio and convert it to float32.
+
+    Args:
+        fn (str): File path to the TIF image.
+
+    Returns:
+        numpy.ndarray: The image data as a NumPy array with dtype float32.
     """
     with rio.open(fn) as src:
         img = src.read()  # Reads as (channels, height, width)
@@ -17,16 +23,41 @@ def open_tif_rasterio(fn):
 
 
 def get_x(file_path):
+    """
+    Get the file path for the input image.
+
+    Args:
+        file_path (Path): Path to the image file.
+
+    Returns:
+        Path: The file path itself.
+    """
     return file_path
 
 
 def get_y(file_path):
+    """
+    Get the corresponding mask file path for the input image.
+
+    Args:
+        file_path (Path): Path to the image file.
+
+    Returns:
+        Path: The file path to the mask image corresponding to the input image.
+    """
     return file_path.parent.parent / "chips_seg" / file_path.name
 
 
 def prepare_data_loaders(image_path, batch_size):
     """
     Prepare data loaders for training and validation.
+
+    Args:
+        image_path (Path): Path to the directory containing input images.
+        batch_size (int): Batch size for training and validation.
+
+    Returns:
+        DataLoaders: Fastai DataLoaders object for training and validation.
     """
     tif_block = TransformBlock(type_tfms=open_tif_rasterio)
 
@@ -58,12 +89,32 @@ def train_model(
 ):
     """
     Train the segmentation model with the provided parameters.
+
+    Args:
+        image_path (Path): Path to the directory containing input images.
+        batch_size (int): Batch size for training.
+        epochs (int): Number of epochs for training.
+        save_path (str): Path to save the trained model.
+        num_classes (int, optional): Number of classes for segmentation. Defaults to 2.
+        arch (str, optional): Model architecture to use. Defaults to "resnet34".
+        pretrained (bool, optional): Whether to use a pre-trained model. Defaults to True.
+        **learner_kwargs: Additional keyword arguments for the learner.
+
+    Returns:
+        None
     """
     # Prepare data loaders
     dls = prepare_data_loaders(image_path, batch_size)
 
     # Create learner
-    arch_func = globals().get(arch, resnet34)
+    arch_dict = {
+        "resnet18": resnet18,
+        "resnet34": resnet34,
+        "resnet50": resnet50,
+        "resnet101": resnet101,
+        "resnet152": resnet152,
+    }
+    arch_func = arch_dict.get(arch, resnet34)
     learn = unet_learner(
         dls,
         arch_func,
@@ -89,6 +140,15 @@ def train_model(
 
 
 def main():
+    """
+    Parse command-line arguments and start model training.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     # Parse command-line arguments
     parser = argparse.ArgumentParser(
         description="Train a segmentation model using fastai and rasterio."
@@ -100,10 +160,16 @@ def main():
         help="Path to the folder containing input images.",
     )
     parser.add_argument(
-        "--batch-size", type=int, default=16, help="Batch size for training. Defaults to 16."
+        "--batch-size",
+        type=int,
+        default=16,
+        help="Batch size for training. Defaults to 16.",
     )
     parser.add_argument(
-        "--epochs", type=int, default=1, help="Number of epochs for training. Defaults to 1."
+        "--epochs",
+        type=int,
+        default=1,
+        help="Number of epochs for training. Defaults to 1.",
     )
     parser.add_argument(
         "--save-model",
@@ -121,7 +187,8 @@ def main():
         "--arch",
         type=str,
         default="resnet34",
-        help="Model architecture to use (default is resnet34). Available options: resnet18, resnet34, resnet50, resnet101, resnet152.",
+        help="Model architecture to use (default is resnet34). Available options: resnet18, resnet34, resnet50, resnet101, \
+             resnet152.",
     )
     parser.add_argument(
         "--no-pretrained",
