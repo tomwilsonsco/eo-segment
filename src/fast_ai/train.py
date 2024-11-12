@@ -94,28 +94,28 @@ def main():
         description="Train a segmentation model using fastai and rasterio."
     )
     parser.add_argument(
-        "--image_path",
+        "--image-path",
         type=str,
         required=True,
         help="Path to the folder containing input images.",
     )
     parser.add_argument(
-        "--batch_size", type=int, default=16, help="Batch size for training."
+        "--batch-size", type=int, default=16, help="Batch size for training. Defaults to 16."
     )
     parser.add_argument(
-        "--epochs", type=int, default=1, help="Number of epochs for training."
+        "--epochs", type=int, default=1, help="Number of epochs for training. Defaults to 1."
     )
     parser.add_argument(
-        "--save_model",
+        "--save-model",
         type=str,
         default=f'models/fastai_unet_{datetime.now().strftime("%d_%m_%Y_%H%M")}',
-        help="Path to save the trained model.",
+        help="Path to save the trained model. Default name uses datetime",
     )
     parser.add_argument(
-        "--num_classes",
+        "--num-classes",
         type=int,
         default=2,
-        help="Number of classes for segmentation (default is binary).",
+        help="Number of classes for segmentation (default is 2 for binary).",
     )
     parser.add_argument(
         "--arch",
@@ -124,7 +124,7 @@ def main():
         help="Model architecture to use (default is resnet34). Available options: resnet18, resnet34, resnet50, resnet101, resnet152.",
     )
     parser.add_argument(
-        "--no_pretrained",
+        "--no-pretrained",
         action="store_true",
         help="Specify to not use a pre-trained model.",
     )
