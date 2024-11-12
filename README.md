@@ -32,16 +32,16 @@ To generate image chips for use with `unet_learner`.
 
 ## Train a model
 ```bash
-python src/fast_ai/train.py --image-path inputs/chips_img
+python src/fast_ai/train.py --image-path inputs/chips_img --epochs 2
 ```
 Many more training options with defaults. Run `python src/fast_ai/train.py -h` to see them.
 
 ## Make predictions for full image extent:
 ```bash
 python src/fast_ai/predict.py \
---input-image inputs/s2_flow_country_2023_06_16.tif \
---trained-model models/fastai_unet_31_10_2024_1119 \
---normaliser-scaler inputs/chips_img/s2_flow_country_2023_06_16_normaliser.pkl \
+--input-image inputs/s2_flow_country_2023_06_16_example.tif \
+--trained-model models/fastai_unet_31_10_2024_1209 \
+--normaliser-scaler inputs/chips_img/s2_flow_country_2023_06_16_example_normaliser.pkl \
 --boundary-remove
 ```
 
