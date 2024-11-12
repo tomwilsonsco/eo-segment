@@ -36,7 +36,8 @@ python src/fast_ai/train.py --image-path inputs/chips_img --epochs 2
 ```
 Many more training options with defaults. Run `python src/fast_ai/train.py -h` to see them.
 
-## Make predictions for full image extent:
+## Make predictions for full image extent 
+(update the `train-model` argument to the model trained in previous step):
 ```bash
 python src/fast_ai/predict.py \
 --input-image inputs/s2_flow_country_2023_06_16_example.tif \
