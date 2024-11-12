@@ -10,7 +10,7 @@ def main():
 
     # Initialize the ImageChip instance for 128 by 128 tiles
     image_chipper = ImageChip(
-        input_image_path="inputs/s2_flow_country_2023_06_16.tif",
+        input_image_path="inputs/s2_flow_country_2023_06_16_example.tif",
         output_path=output_dir,
         pixel_dimensions=128,
         offset=64,
@@ -28,9 +28,9 @@ def main():
     output_dir = Path("inputs") / "chips_seg"
 
     image_chipper = ImageChip(
-        input_image_path="inputs/water_class_img.tif",
+        input_image_path="inputs/water_class_img_example.tif",
         output_path=output_dir,
-        output_name="s2_flow_country_2023_06_16",
+        output_name="s2_flow_country_2023_06_16_example",
         pixel_dimensions=128,
         offset=64,
         output_format="tif",
