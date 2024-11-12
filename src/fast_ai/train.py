@@ -106,7 +106,6 @@ def train_model(
     # Prepare data loaders
     dls = prepare_data_loaders(image_path, batch_size)
 
-    # Create learner
     arch_dict = {
         "resnet18": resnet18,
         "resnet34": resnet34,
@@ -114,7 +113,8 @@ def train_model(
         "resnet101": resnet101,
         "resnet152": resnet152,
     }
-    arch_func = arch_dict.get(arch, resnet34)
+    arch_func = arch_dict.get(arch, "resnet34")
+
     learn = unet_learner(
         dls,
         arch_func,
